@@ -6,13 +6,6 @@
         nav .hidden{
             display: block;
         }
-        .wishlisted {
-            background-color: #F15412 !important;
-            border: 1px solid transparent !important;
-        }
-        .wishlisted i{
-            color: #fff !important;
-        }
     </style>
     <main class="main">
         <div class="page-header breadcrumb-wrap">
@@ -29,7 +22,7 @@
                     <div class="col-lg-9">
                         <div class="shop-product-fillter">
                             <div class="totall-product">
-                                <p> We found <strong class="text-brand">{{$products->total()}}</strong> items for you!</p>
+                                <p> We found <strong class="text-brand">{{$products->total()}}</strong> items for you form <strong class="text-brand">{{$category_name}}</strong> Category!</p>
                             </div>
                             <div class="sort-by-product-area">
                                 <div class="sort-by-cover mr-10">
@@ -73,9 +66,6 @@
                             </div>
                         </div>
                         <div class="row product-grid-3">
-                             @php
-                                $witems = Cart::instance('wishlist')->content()->pluck('id');
-                             @endphp
                              @foreach($products as $product)
 
                             <div class="col-lg-4 col-md-4 col-6 col-sm-6">
@@ -112,11 +102,6 @@
                                             {{-- <span class="old-price">$245.8</span> --}}
                                         </div>
                                         <div class="product-action-1 show">
-                                            @if($witems->contains($product->id))
-                                                <a aria-label="Remove From Wishlist" class="action-btn hover-up wishlisted" href="#" wire:click.prevent="removeFromWishlist({{$product->id}})"><i class="fi-rs-heart"></i></a>
-                                            @else
-                                                <a aria-label="Add To Wishlist" class="action-btn hover-up" href="#" wire:click.prevent="addToWishlist({{$product->id}},'{{$product->name}}','{{$product->regular_price}}')"><i class="fi-rs-heart"></i></a>
-                                            @endif
                                             <a aria-label="Add To Cart" class="action-btn hover-up" href="#" wire:click.prevent="store({{$product->id}}, '{{$product->name}}', {{$product->regular_price}})"><i class="fi-rs-shopping-bag-add"></i></a>
                                         </div>
                                     </div>
@@ -148,23 +133,22 @@
                             <h5 class="section-title style-1 mb-30 wow fadeIn animated">Category</h5>
                             <ul class="categories">
                                 @foreach($categories as $category)
-                                  <li><a href="{{route('product.category',['slug'=>$category->slug])}}">{{$category->name}}</a></li>
+                                <li><a href="{{route('product.category',['slug'=>$category->slug])}}">{{$category->name}}</a></li>
                                 @endforeach
                             </ul>
                         </div>
                         <!-- Fillter By Price -->
                         <div class="sidebar-widget price_range range mb-30">
                             <div class="widget-header position-relative mb-20 pb-10">
-                                <h5 class="widget-title mb-10">Fillter by price</h5>
+                                <h5 class="widget-title mb-10">Fill by price</h5>
                                 <div class="bt-1 border-color-1"></div>
                             </div>
                             <div class="price-filter">
                                 <div class="price-filter-inner">
-                                    <div id="slider-range" wire:ignore></div>
+                                    <div id="slider-range"></div>
                                     <div class="price_slider_amount">
                                         <div class="label-input">
-                                            <span>Range:</span> <span class="text-info">${{$min_value}}</span> - <span class="text-info">${{$max_value}}</span>
-                                           
+                                            <span>Range:</span><input type="text" id="amount" name="price" placeholder="Add Your Price">
                                         </div>
                                     </div>
                                 </div>
@@ -254,23 +238,3 @@
         </section>
     </main>
 </div>
-
-@push('scripts')
-    <script>
-       var sliderrange = $('#slider-range');
-        var amountprice = $('#amount');
-
-        $(function () {
-            sliderrange.slider({
-                range: true,
-                min: 0,
-                max: 1000,
-                values: [0, 1000],
-                slide: function (event, ui) {
-                    @this.set('min_value', ui.values[0]);
-                    @this.set('max_value', ui.values[1]);
-                }
-            });
-        });
-    </script>
-@endpush
